@@ -1,5 +1,6 @@
 'use strict';
 
+/* eslint no-undef: 0 no-unused-vars: 1*/
 var handleError = function handleError(message) {
   $('#errorMessage').text(message);
   $('#domoMessage').animate({ width: 'toggle' }, 350);
@@ -19,7 +20,7 @@ var sendAjax = function sendAjax(action, data) {
     },
     error: function error(xhr, status, _error) {
       var messageObj = JSON.parse(xhr.responseText);
-
+      messageObj.error = _error; // Tenative
       handleError(messageObj.error);
     }
   });
@@ -31,7 +32,7 @@ $(document).ready(function () {
 
     $('#domoMessage').animate({ width: 'hide' }, 350);
 
-    if ($('#user').val() == '' || $('#pass').val() == '' || $('#pass2').val() == '') {
+    if ($('#user').val() === '' || $('#pass').val() === '' || $('#pass2').val() === '') {
       handleError('RAWR! All fields are required');
       return false;
     }
@@ -51,7 +52,7 @@ $(document).ready(function () {
 
     $('#domoMessage').animate({ width: 'hide' }, 350);
 
-    if ($('#user').val() == '' || $('#pass').val() == '') {
+    if ($('#user').val() === '' || $('#pass').val() === '') {
       handleError('RAWR! Username or password is empty');
       return false;
     }
@@ -66,7 +67,7 @@ $(document).ready(function () {
 
     $('#domoMessage').animate({ width: 'hide' }, 350);
 
-    if ($('#domoName').val() == '' || $('#domoAge').val() == '') {
+    if ($('#domoName').val() === '' || $('#domoAge').val() === '') {
       handleError('RAWR! All fields are required');
       return false;
     }

@@ -1,5 +1,4 @@
 const models = require('../models');
-
 const Account = models.Account;
 
 const loginPage = (req, res) => {
@@ -11,11 +10,11 @@ const signupPage = (req, res) => {
 };
 
 const logout = (req, res) => {
+  req.session.destroy();
   // Notice this redirect, rather than render!
   res.redirect('/');
 };
 
-// Stubbed out for now
 const login = (request, response) => {
   const req = request;
   const res = response;
@@ -29,8 +28,9 @@ const login = (request, response) => {
 
   return Account.AccountModel.authenticate(username, password, (err, account) => {
     if (err || !account) {
-      return res.status(401).json({ error: 'RAWR! Wrong username / password!' });
+      return res.status(401).json({ error: 'RAWR! Wrong username/password' });
     }
+    req.session.account = Account.AccountModel.toAPI(account);
     return res.json({ redirect: '/maker' });
   });
 };
@@ -60,13 +60,16 @@ const signup = (request, response) => {
     const newAccount = new Account.AccountModel(accountData);
     const savePromise = newAccount.save();
 
-    savePromise.then(() => res.json({ redirect: '/maker' }));
+    savePromise.then(() => {
+      req.session.account = Account.AccountModel.toAPI(newAccount);
+      return res.json({ redirect: '/maker' });
+    });
     savePromise.catch((err) => {
       console.log(err);
       if (err.code === 11000) {
         return res.status(400).json({ error: 'RAWR! Username already in use.' });
       }
-      return res.status(400).json({ error: 'RAWR! An error has occurred.' });
+      return res.status(400).json({ error: 'An error has occurred.' });
     });
   });
 };
